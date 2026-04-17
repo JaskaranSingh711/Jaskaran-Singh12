@@ -1,0 +1,66 @@
+emotion-ai-agent/
+│
+├── app/
+│   ├── main.py              # Entry point
+│   ├── emotion.py          # Emotion detection
+│   ├── agent.py            # AI logic
+│   ├── memory.py           # Memory handling
+│
+├── requirements.txt
+├── .env
+├── README.md
+└── .gitignore
+
+from transformers import pipeline
+
+emotion_model = pipeline(
+    "text-classification",
+    model="j-hartmann/emotion-english-distilroberta-base"
+)
+
+def detect_emotion(text):
+    result = emotion_model(text)
+    return result[0]['label']
+
+    from langchain.chat_models import ChatOpenAI
+
+llm = ChatOpenAI(model="gpt-4")
+
+def generate_response(user_input, emotion):
+    prompt = f"""
+    User emotion: {emotion}
+
+    Rules:
+    - Sad → supportive
+    - Angry → calm
+    - Happy → energetic
+
+    User: {user_input}
+    AI:
+    """
+    return llm.predict(prompt)
+
+    emotion_history = []
+
+def save_emotion(emotion):
+    emotion_history.append(emotion)
+
+def get_history():
+    return emotion_history
+
+    from emotion import detect_emotion
+from agent import generate_response
+from memory import save_emotion, get_history
+
+while True:
+    user_input = input("You: ")
+
+    emotion = detect_emotion(user_input)
+    save_emotion(emotion)
+
+    response = generate_response(user_input, emotion)
+
+    print(f"(Emotion: {emotion})")
+    print("AI:", response)
+
+    
